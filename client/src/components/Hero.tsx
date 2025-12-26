@@ -48,7 +48,7 @@ export default function Hero() {
 
               <h1 className="text-5xl md:text-7xl font-bold leading-tight">
                 Hi, I'm <br/>
-                <span className="text-gradient">Rajiv</span>
+                <span className="text-gradient">Abdhesh</span>
               </h1>
               
               <div className="text-xl md:text-2xl text-muted-foreground font-light h-[60px]">

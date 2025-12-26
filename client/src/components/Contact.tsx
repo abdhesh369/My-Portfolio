@@ -59,7 +59,7 @@ export default function Contact() {
                 <div>
                   <p className="font-semibold text-foreground mb-1">Email</p>
                   <a href="mailto:abdheshshah111@gmail.com" className="text-muted-foreground hover:text-primary transition-colors text-sm break-all">
-                    rajiv@example.com
+                    abdheshshah111@gmail.com
                   </a>
                 </div>
               </div>
@@ -83,7 +83,7 @@ export default function Contact() {
                 <div>
                   <p className="font-semibold text-foreground mb-1">Phone</p>
                   <a href="tel:+9779761363076" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                    +977 9876543210
+                    +977 9761363076
                   </a>
                 </div>
               </div>

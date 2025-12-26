@@ -58,7 +58,7 @@ export default function About() {
             <div className="relative rounded-2xl overflow-hidden border-2 border-primary/10 shadow-xl bg-card">
               <img 
                 src={profileImg} 
-                alt="Rajiv" 
+                alt="Abdhesh" 
                 className="w-full h-auto object-cover aspect-[4/5]"
               />
             </div>
@@ -67,7 +67,7 @@ export default function About() {
           <div className="space-y-6">
             <h3 className="text-2xl font-bold">Engineering Student & Developer</h3>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              I am Rajiv, an Electronics & Communication Engineering student at Tribhuvan University with a deep passion for computing systems. My academic background gives me a unique perspective on the intersection of hardware and software.
+              I am Abdhesh, an Electronics & Communication Engineering student at Tribhuvan University with a deep passion for computing systems. My academic background gives me a unique perspective on the intersection of hardware and software.
             </p>
             <p className="text-lg text-muted-foreground leading-relaxed">
               While I study engineering principles by day, I spend my nights building practical software solutions. I focus on clean architecture, performance optimization, and creating intuitive user experiences.
