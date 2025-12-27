@@ -10,25 +10,41 @@ A personal portfolio website built with React, Express, and PostgreSQL. The appl
 - **UI Components**: Radix UI, shadcn/ui
 
 ## Project Structure
-```
-├── client/               # Frontend React application
+My Portfolio/
+│
+├── frontend/                 # React + Vite frontend
 │   ├── src/
-│   │   ├── components/   # React components
-│   │   ├── hooks/        # Custom React hooks
-│   │   ├── lib/          # Utilities and query client
-│   │   └── pages/        # Page components
-│   └── index.html        # Entry HTML file
-├── server/               # Backend Express server
-│   ├── index.ts          # Server entry point
-│   ├── routes.ts         # API routes
-│   ├── db.ts             # Database connection
-│   ├── storage.ts        # Data access layer
-│   └── vite.ts           # Vite dev server integration
-├── shared/               # Shared code between client/server
-│   ├── schema.ts         # Drizzle database schema
-│   └── routes.ts         # Shared route definitions
-└── script/
-    └── build.ts          # Production build script
+│   │   ├── components/       # UI components
+│   │   ├── hooks/            # Custom React hooks
+│   │   ├── lib/              # Utilities, API helpers
+│   │   └── pages/            # Page-level components
+│   ├── index.html
+│   ├── vite.config.ts
+│   └── package.json
+│
+├── backend/                  # Express backend
+│   ├── src/
+│   │   ├── index.ts          # Server entry point
+│   │   ├── routes.ts         # API routes
+│   │   ├── db.ts             # Database connection
+│   │   ├── storage.ts        # Data access layer
+│   │   ├── static.ts         # Serve built frontend
+│   │   └── vite.ts           # Vite dev integration
+│   ├── tsconfig.json
+│   └── package.json
+│
+├── shared/                   # Shared types & schemas
+│   ├── schema.ts             # Drizzle database schema
+│   └── routes.ts             # Shared API route definitions
+│
+├── resources/                # Static assets
+│   ├── images/
+│   └── documents/
+│
+├── extra/                    # Old scripts, references, notes
+│
+└── README.md
+
 ```
 
 ## Development
