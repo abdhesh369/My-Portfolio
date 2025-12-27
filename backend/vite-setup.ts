@@ -1,5 +1,6 @@
+// backend/vite-setup.ts
 import { type Express } from "express";
-import { createServer as createViteServer, createLogger } from "vite";
+import { createServer } from "vite";
 import { type Server } from "http";
 import viteConfig from "../vite.config";
 import fs from "fs";
@@ -8,37 +9,47 @@ import { nanoid } from "nanoid";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const viteLogger = createLogger();
 
 export async function setupVite(server: Server, app: Express) {
-  const vite = await createViteServer({
+  const viteDevServer = await createServer({
     ...viteConfig,
     configFile: false,
-    customLogger: {
-      ...viteLogger,
-      error: (msg, options) => {
-        viteLogger.error(msg, options);
-        process.exit(1);
-      },
+    server: { 
+      middlewareMode: true, 
+      hmr: { server } 
     },
-    server: { middlewareMode: true, hmr: { server }, allowedHosts: true },
     appType: "custom",
   });
 
-  app.use(vite.middlewares);
+  app.use(viteDevServer.middlewares);
 
   app.use("*", async (req, res, next) => {
+    const url = req.originalUrl;
+
     try {
+      // Don't handle API routes
+      if (url.startsWith('/api')) {
+        return next();
+      }
+
       const clientTemplate = path.resolve(__dirname, "..", "client", "index.html");
+      
+      if (!fs.existsSync(clientTemplate)) {
+        throw new Error(`Template not found: ${clientTemplate}`);
+      }
+
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
+      
       template = template.replace(
         `src="/src/main.tsx"`,
         `src="/src/main.tsx?v=${nanoid()}"`
       );
-      const page = await vite.transformIndexHtml(req.originalUrl, template);
+      
+      const page = await viteDevServer.transformIndexHtml(url, template);
       res.status(200).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
-      vite.ssrFixStacktrace(e as Error);
+      viteDevServer.ssrFixStacktrace(e as Error);
+      console.error("Vite error:", e);
       next(e);
     }
   });

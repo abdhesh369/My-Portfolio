@@ -63,35 +63,41 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Register your routes
-  await registerRoutes(httpServer, app);
+  try {
+    // Register your routes
+    await registerRoutes(httpServer, app);
 
-  // Global error handler
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-    res.status(status).json({ message });
-    // Do NOT throw the error, Express has already handled response
-  });
+    // Serve static files in production, Vite setup in development
+    if (process.env.NODE_ENV === "production") {
+      serveStatic(app);
+    } else {
+      const { setupVite } = await import("./vite-setup");
+      await setupVite(httpServer, app);
+    }
 
-  // Serve static files in production, Vite setup in development
-  if (process.env.NODE_ENV === "production") {
-    serveStatic(app);
-  } else {
-    const { setupVite } = await import("./vite"); // ensure vite.ts is in backend/
-    await setupVite(httpServer, app);
+    // Global error handler (must be after routes and vite setup)
+    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+      const status = err.status || err.statusCode || 500;
+      const message = err.message || "Internal Server Error";
+      log(`Error: ${message}`, "error");
+      res.status(status).json({ message });
+    });
+
+    // Start HTTP server
+    const port = parseInt(process.env.PORT || "5000", 10);
+    httpServer.listen(
+      {
+        port,
+        host: "0.0.0.0",
+        reusePort: true,
+      },
+      () => {
+        log(`Server is running on port ${port}`);
+        log(`Environment: ${process.env.NODE_ENV || "development"}`);
+      },
+    );
+  } catch (error) {
+    log(`Failed to start server: ${error}`, "error");
+    process.exit(1);
   }
-
-  // Start HTTP server
-  const port = parseInt(process.env.PORT || "5000", 10);
-  httpServer.listen(
-    {
-      port,
-      host: "0.0.0.0",
-      reusePort: true,
-    },
-    () => {
-      log(`Server is running on port ${port}`);
-    },
-  );
 })();
