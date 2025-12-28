@@ -101,3 +101,6 @@ app.use((req, res, next) => {
     process.exit(1);
   }
 })();
+app.get("/healthz", (req, res) => {
+  res.status(200).json({ ok: true });
+});
