@@ -1,7 +1,7 @@
-// backend/index.ts
+// backend/src/index.ts
+import path from "path";
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { serveStatic } from "./static";
 import { createServer } from "http";
 
 const app = express();
@@ -22,7 +22,6 @@ app.use(
     },
   }),
 );
-
 app.use(express.urlencoded({ extended: false }));
 
 // Logging utility
@@ -62,6 +61,18 @@ app.use((req, res, next) => {
   next();
 });
 
+// Function to serve frontend static files
+function serveFrontendStatic(app: express.Express) {
+  const frontendDist = path.join(__dirname, "../../dist/public");
+  app.use(express.static(frontendDist));
+
+  // For SPA routes, send index.html
+  app.get("*", (_req, res) => {
+    res.sendFile(path.join(frontendDist, "index.html"));
+  });
+}
+
+// Main async IIFE
 (async () => {
   try {
     // Register your routes
@@ -69,7 +80,7 @@ app.use((req, res, next) => {
 
     // Serve static files in production, Vite setup in development
     if (process.env.NODE_ENV === "production") {
-      serveStatic(app);
+      serveFrontendStatic(app);
     } else {
       const { setupVite } = await import("./vite-setup");
       await setupVite(httpServer, app);
@@ -101,6 +112,8 @@ app.use((req, res, next) => {
     process.exit(1);
   }
 })();
-app.get("/healthz", (req, res) => {
+
+// Health check route
+app.get("/healthz", (_req, res) => {
   res.status(200).json({ ok: true });
 });
