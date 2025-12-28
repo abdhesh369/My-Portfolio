@@ -1,7 +1,7 @@
 // backend/index.ts
 import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes"; // ensure routes.ts is in backend/
-import { serveStatic } from "./static";    // ensure static.ts is in backend/
+import { registerRoutes } from "./routes";
+import { serveStatic } from "./static";
 import { createServer } from "http";
 
 const app = express();

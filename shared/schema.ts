@@ -31,8 +31,9 @@ export type Project = Omit<ProjectFromDB, 'techStack'> & {
 export type InsertProject = typeof projects.$inferInsert;
 
 // Zod schemas for validation
-export const projectSchema = createSelectSchema(projects);
-export const insertProjectSchema = createInsertSchema(projects);
+export const projectSchema = createSelectSchema(projects).extend({
+  techStack: z.array(z.string()),
+});export const insertProjectSchema = createInsertSchema(projects);
 
 // ===== SKILLS =====
 export const skills = sqliteTable("skills", {

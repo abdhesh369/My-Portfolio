@@ -1,35 +1,54 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+// backend/vite-setup.ts
+import { type Express } from "express";
+import { createServer } from "vite";
+import { type Server } from "http";
+import viteConfig from "../../vite.config";
+import fs from "fs";
 import path from "path";
-import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+import { nanoid } from "nanoid";
 
-export default defineConfig({
-  plugins: [
-    react(),
-    runtimeErrorOverlay(),
-  ],
-  resolve: {
-    alias: {
-      "@": path.resolve(import.meta.dirname, "frontend", "src"),
-      "@shared": path.resolve(import.meta.dirname, "shared"),
-      "@assets": path.resolve(import.meta.dirname, "attached_assets"),
+export async function setupVite(server: Server, app: Express) {
+  const viteDevServer = await createServer({
+    ...viteConfig,
+    configFile: false,
+    server: {
+      middlewareMode: true,
+      hmr: { server }
     },
-  },
-  root: path.resolve(import.meta.dirname, "frontend"),
-  build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
-    emptyOutDir: true,
-  },
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-      },
-    },
-    fs: {
-      strict: true,
-      deny: ["**/.*"],
-    },
-  },
-});
+    appType: "custom",
+  });
+
+  app.use(viteDevServer.middlewares);
+
+  app.use("*", async (req, res, next) => {
+    const url = req.originalUrl;
+
+    try {
+      // Don't handle API routes
+      if (url.startsWith('/api')) {
+        return next();
+      }
+
+      // Resolve paths from project root
+      const projectRoot = path.resolve(process.cwd());
+      const clientTemplate = path.join(projectRoot, "frontend", "index.html");
+
+      if (!fs.existsSync(clientTemplate)) {
+        throw new Error(`Template not found: ${clientTemplate}`);
+      }
+
+      let template = await fs.promises.readFile(clientTemplate, "utf-8");
+      template = template.replace(
+        `src="/src/main.tsx"`,
+        `src="/src/main.tsx?v=${nanoid()}"`
+      );
+
+      const page = await viteDevServer.transformIndexHtml(url, template);
+      res.status(200).set({ "Content-Type": "text/html" }).end(page);
+    } catch (e) {
+      viteDevServer.ssrFixStacktrace(e as Error);
+      console.error("Vite error:", e);
+      next(e);
+    }
+  });
+}

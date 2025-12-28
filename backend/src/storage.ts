@@ -1,5 +1,5 @@
 // backend/storage.ts
-import { db, sqlite } from "./db";
+import { db } from "./db";
 import {
   projects,
   skills,
@@ -22,8 +22,8 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   async getProjects(): Promise<Project[]> {
     try {
-      // With Drizzle + better-sqlite3, execute query synchronously
-      const result: any[] = db.select().from(projects) as any;
+      // Execute query with .all()
+      const result = db.select().from(projects).all();
       console.log("Projects fetched, count:", result.length);
 
       // Parse techStack from JSON string to array
@@ -40,8 +40,8 @@ export class DatabaseStorage implements IStorage {
 
   async getSkills(): Promise<Skill[]> {
     try {
-      // With Drizzle + better-sqlite3, execute query synchronously
-      const result: Skill[] = db.select().from(skills) as any;
+      // Execute query with .all()
+      const result = db.select().from(skills).all();
       console.log("Skills fetched successfully, count:", result.length);
       return result;
     } catch (error) {
@@ -53,7 +53,9 @@ export class DatabaseStorage implements IStorage {
 
   async getExperiences(): Promise<Experience[]> {
     try {
-      const result: Experience[] = db.select().from(experiences) as any;
+      // Execute query with .all()
+      const result = db.select().from(experiences).all();
+      console.log("Experiences fetched successfully, count:", result.length);
       return result;
     } catch (error) {
       console.error("Database error in getExperiences:", error);
@@ -62,8 +64,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
-    const [message] = await db.insert(messages).values(insertMessage).returning();
-    return message;
+    const result = db.insert(messages).values(insertMessage).returning().get();
+    return result;
   }
 }
 
