@@ -4,7 +4,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Fix __dirname for ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [
@@ -24,15 +26,18 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
+    port: 5173, // explicitly set frontend port
+    strictPort: true, // fail if port is busy
     proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
+      "/api": {
+        target: "http://localhost:5000",
         changeOrigin: true,
+        secure: false, // needed if backend is HTTP
       },
     },
     fs: {
       strict: true,
-      deny: ["**/.*"],
+      deny: ["**/.*"], // optional: blocks hidden files
     },
   },
 });

@@ -10,15 +10,15 @@ export async function seedDatabase() {
     console.log("Seeding database...");
 
     // ------------------- PROJECTS -------------------
-    const projectsList = [
+    const projectList = [
       {
         title: "Calculator Application",
         description: "A comprehensive calculator with scientific functions.",
         techStack: ["React", "CSS"],
-        imageUrl: "https://images.unsplash.com/photo-1587145820266-a5951ee1f620?q=80&w=800&auto=format&fit=crop",
+        imageUrl: "https://images.unsplash.com/photo-1581091870620-1f8a0ff05a1f?q=80&w=800&auto=format&fit=crop",
         category: "Utility",
         githubUrl: "https://github.com",
-        liveUrl: "", // Required field
+        liveUrl: "",
         problemStatement: "Users needed a convenient way to perform scientific calculations.",
         motivation: "Built to demonstrate complex state management in React.",
         systemDesign: "Component-based React architecture with utility math functions.",
@@ -39,26 +39,43 @@ export async function seedDatabase() {
         challenges: "Maintaining data consistency.",
         learnings: "Strong understanding of file I/O in C++.",
       },
+      {
+        title: "Python Utilities & Scripts",
+        description: "Automation scripts for productivity.",
+        techStack: ["Python"],
+        imageUrl: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?q=80&w=800&auto=format&fit=crop",
+        category: "Utility",
+        githubUrl: "https://github.com",
+        liveUrl: "",
+        problemStatement: "Manual repetitive tasks wasted time.",
+        motivation: "Improve productivity via automation.",
+        systemDesign: "Modular CLI-based scripts.",
+        challenges: "Handling edge cases in file formats.",
+        learnings: "Advanced Python standard library usage.",
+      },
     ];
 
-    for (const proj of projectsList) {
+    for (const proj of projectList) {
       await storage.createProject(proj);
     }
 
     // ------------------- SKILLS -------------------
-    const skillsList = [
+    const skillList = [
       { name: "C", category: "Languages", icon: "Code" },
       { name: "C++", category: "Languages", icon: "Code2" },
       { name: "Python", category: "Languages", icon: "Snake" },
       { name: "JavaScript", category: "Web", icon: "FileJson" },
+      { name: "HTML/CSS", category: "Web", icon: "Layout" },
+      { name: "8085 Microprocessor", category: "System", icon: "Cpu" },
+      { name: "Data Structures", category: "Core", icon: "Database" },
     ];
 
-    for (const skill of skillsList) {
+    for (const skill of skillList) {
       await storage.createSkill(skill);
     }
 
     // ------------------- EXPERIENCES -------------------
-    const experiencesList = [
+    const experienceList = [
       {
         role: "Student",
         organization: "Tribhuvan University",
@@ -68,7 +85,7 @@ export async function seedDatabase() {
       },
     ];
 
-    for (const exp of experiencesList) {
+    for (const exp of experienceList) {
       await storage.createExperience(exp);
     }
 

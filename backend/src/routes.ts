@@ -40,10 +40,11 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     }
   });
 
-  // ------------------- SEED DATABASE (SAFE) -------------------
-  seedDatabase()
-    .then(() => console.log("Database seeding checked/completed."))
-    .catch(err => console.error("Database seeding error:", err));
+  // ------------------- SEED DATABASE -------------------
+  // Run seeding in the background but don't block server startup
+  seedDatabase().catch(err => {
+    console.error("Database seeding failed:", err);
+  });
 
   return httpServer;
 }

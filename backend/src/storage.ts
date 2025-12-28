@@ -23,9 +23,14 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
+  // ------------------- GET METHODS -------------------
   async getProjects(): Promise<Project[]> {
     const result = await db.select().from(projects).all();
-    return result.map(p => ({ ...p, techStack: JSON.parse(p.techStack as string) }));
+    // Parse techStack string into array for frontend
+    return result.map(p => ({
+      ...p,
+      techStack: typeof p.techStack === "string" ? JSON.parse(p.techStack) : p.techStack,
+    }));
   }
 
   async getSkills(): Promise<Skill[]> {
@@ -36,22 +41,25 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(experiences).all();
   }
 
+  // ------------------- CREATE METHODS -------------------
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
     return await db.insert(messages).values(insertMessage).returning().get();
   }
 
   async createProject(project: Omit<Project, "id">): Promise<Project> {
-  // Convert techStack array to string for DB
-  const inserted = await db
-    .insert(projects)
-    .values({ ...project, techStack: JSON.stringify(project.techStack) })
-    .returning()
-    .get();
+    // Convert techStack array to string for DB
+    const inserted = await db
+      .insert(projects)
+      .values({ ...project, techStack: JSON.stringify(project.techStack) })
+      .returning()
+      .get();
 
-  // Convert back to array before returning
-  return { ...inserted, techStack: JSON.parse(inserted.techStack as string) };
-}
-
+    // Convert back to array before returning
+    return {
+      ...inserted,
+      techStack: JSON.parse(inserted.techStack as string),
+    };
+  }
 
   async createSkill(skill: Omit<Skill, "id">): Promise<Skill> {
     return await db.insert(skills).values(skill).returning().get();
@@ -62,4 +70,5 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
+// ------------------- SINGLETON -------------------
 export const storage = new DatabaseStorage();
