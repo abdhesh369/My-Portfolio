@@ -4,6 +4,7 @@ import cors from "cors";
 import { registerRoutes } from "./routes";
 import { seedDatabase } from "./seed";
 
+
 // ------------------- APP SETUP -------------------
 const app = express();
 const httpServer = createServer(app);
@@ -62,13 +63,6 @@ app.use(express.urlencoded({ extended: false, limit: "10mb" }));
 // Request logging
 app.use((req, res, next) => {
   const start = Date.now();
-  const originalJson = res.json;
-  let capturedJson: any;
-
-  res.json = function (body, ...args) {
-    capturedJson = body;
-    return originalJson.apply(res, [body, ...args]);
-  };
 
   res.on("finish", () => {
     if (req.path.startsWith("/api")) {

@@ -19,19 +19,20 @@ function log(message: string, level: "info" | "error" | "warn" = "info") {
 
 // Validation middleware factory
 function validateBody<T extends z.ZodType>(schema: T) {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     try {
       req.body = schema.parse(req.body);
       next();
     } catch (err) {
       if (err instanceof z.ZodError) {
-        return res.status(400).json({
+        res.status(400).json({
           message: "Validation failed",
           errors: err.errors.map((e) => ({
             path: e.path.join("."),
             message: e.message,
           })),
         });
+        return;
       }
       next(err);
     }
@@ -42,7 +43,7 @@ function validateBody<T extends z.ZodType>(schema: T) {
 function asyncHandler(
   fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
 ) {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
 }
@@ -71,13 +72,15 @@ export async function registerRoutes(
       const id = parseInt(req.params.id, 10);
       
       if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid project ID" });
+        res.status(400).json({ message: "Invalid project ID" });
+        return;
       }
 
       const project = await storage.getProjectById(id);
       
       if (!project) {
-        return res.status(404).json({ message: "Project not found" });
+        res.status(404).json({ message: "Project not found" });
+        return;
       }
 
       res.json(project);
@@ -103,7 +106,8 @@ export async function registerRoutes(
       const id = parseInt(req.params.id, 10);
       
       if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid project ID" });
+        res.status(400).json({ message: "Invalid project ID" });
+        return;
       }
 
       const project = await storage.updateProject(id, req.body);
@@ -119,7 +123,8 @@ export async function registerRoutes(
       const id = parseInt(req.params.id, 10);
       
       if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid project ID" });
+        res.status(400).json({ message: "Invalid project ID" });
+        return;
       }
 
       await storage.deleteProject(id);
@@ -146,13 +151,15 @@ export async function registerRoutes(
       const id = parseInt(req.params.id, 10);
       
       if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid skill ID" });
+        res.status(400).json({ message: "Invalid skill ID" });
+        return;
       }
 
       const skill = await storage.getSkillById(id);
       
       if (!skill) {
-        return res.status(404).json({ message: "Skill not found" });
+        res.status(404).json({ message: "Skill not found" });
+        return;
       }
 
       res.json(skill);
@@ -178,7 +185,8 @@ export async function registerRoutes(
       const id = parseInt(req.params.id, 10);
       
       if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid skill ID" });
+        res.status(400).json({ message: "Invalid skill ID" });
+        return;
       }
 
       const skill = await storage.updateSkill(id, req.body);
@@ -194,7 +202,8 @@ export async function registerRoutes(
       const id = parseInt(req.params.id, 10);
       
       if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid skill ID" });
+        res.status(400).json({ message: "Invalid skill ID" });
+        return;
       }
 
       await storage.deleteSkill(id);
@@ -221,13 +230,15 @@ export async function registerRoutes(
       const id = parseInt(req.params.id, 10);
       
       if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid experience ID" });
+        res.status(400).json({ message: "Invalid experience ID" });
+        return;
       }
 
       const experience = await storage.getExperienceById(id);
       
       if (!experience) {
-        return res.status(404).json({ message: "Experience not found" });
+        res.status(404).json({ message: "Experience not found" });
+        return;
       }
 
       res.json(experience);
@@ -253,7 +264,8 @@ export async function registerRoutes(
       const id = parseInt(req.params.id, 10);
       
       if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid experience ID" });
+        res.status(400).json({ message: "Invalid experience ID" });
+        return;
       }
 
       const experience = await storage.updateExperience(id, req.body);
@@ -269,7 +281,8 @@ export async function registerRoutes(
       const id = parseInt(req.params.id, 10);
       
       if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid experience ID" });
+        res.status(400).json({ message: "Invalid experience ID" });
+        return;
       }
 
       await storage.deleteExperience(id);
@@ -296,13 +309,15 @@ export async function registerRoutes(
       const id = parseInt(req.params.id, 10);
       
       if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid message ID" });
+        res.status(400).json({ message: "Invalid message ID" });
+        return;
       }
 
       const message = await storage.getMessageById(id);
       
       if (!message) {
-        return res.status(404).json({ message: "Message not found" });
+        res.status(404).json({ message: "Message not found" });
+        return;
       }
 
       res.json(message);
@@ -332,7 +347,8 @@ export async function registerRoutes(
       const id = parseInt(req.params.id, 10);
       
       if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid message ID" });
+        res.status(400).json({ message: "Invalid message ID" });
+        return;
       }
 
       await storage.deleteMessage(id);
@@ -341,7 +357,7 @@ export async function registerRoutes(
     })
   );
 
- // ==================== HEALTH & INFO ====================
+  // ==================== HEALTH & INFO ====================
 
   // API info endpoint
   app.get("/api", (_req, res) => {
