@@ -8,7 +8,7 @@ import {
   insertSkillApiSchema,
   insertExperienceApiSchema,
   insertMessageApiSchema,
-} from "./schema";
+} from "./schema.js";
 
 // ==================== ERROR SCHEMAS ====================
 
