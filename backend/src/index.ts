@@ -1,8 +1,8 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { createServer } from "http";
 import cors from "cors";
-import { registerRoutes } from "./routes";
-import { seedDatabase } from "./seed";
+import { registerRoutes } from "./routes.js";
+import { seedDatabase } from "./seed.js";
 
 
 // ------------------- APP SETUP -------------------

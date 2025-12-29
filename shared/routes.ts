@@ -50,13 +50,6 @@ const createSuccessResponse = <T extends z.ZodTypeAny>(dataSchema: T) =>
     data: dataSchema,
   });
 
-const listSuccessResponse = <T extends z.ZodTypeAny>(itemSchema: T) =>
-  z.object({
-    success: z.boolean(),
-    data: z.array(itemSchema),
-    count: z.number(),
-  });
-
 // ==================== API DEFINITION ====================
 
 export const api = {

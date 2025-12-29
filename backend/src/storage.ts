@@ -13,7 +13,7 @@ import {
   type InsertProject,
   type InsertSkill,
   type InsertExperience,
-} from "../../shared/schema";
+} from "@shared/schema";
 
 // Logging utility (consistent with other files)
 function log(message: string, level: "info" | "error" | "warn" = "info") {

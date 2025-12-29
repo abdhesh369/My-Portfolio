@@ -1,14 +1,14 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import type { Server } from "http";
 import { z } from "zod";
-import { api } from "../../shared/routes";
-import { storage } from "./storage";
+import { api } from "@shared/routes";
+import { storage } from "./storage.js";
 import {
   insertProjectApiSchema,
   insertSkillApiSchema,
   insertExperienceApiSchema,
   insertMessageApiSchema,
-} from "../../shared/schema";
+} from "@shared/schema";
 
 // Logging utility
 function log(message: string, level: "info" | "error" | "warn" = "info") {

@@ -31,11 +31,6 @@ const createSuccessResponse = (dataSchema) => z.object({
     message: z.string(),
     data: dataSchema,
 });
-const listSuccessResponse = (itemSchema) => z.object({
-    success: z.boolean(),
-    data: z.array(itemSchema),
-    count: z.number(),
-});
 export const api = {
     projects: {
         list: {
