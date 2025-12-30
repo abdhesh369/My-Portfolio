@@ -4,6 +4,12 @@ import { useToast } from "@/hooks/use-toast";
 import type { InsertMessage } from "@shared/schema";
 
 /* ---------------------------------- */
+/* API Base URL */
+/* ---------------------------------- */
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+/* ---------------------------------- */
 /* Generic fetch helper */
 /* ---------------------------------- */
 
@@ -13,7 +19,8 @@ async function fetchAndParse<T>(
   errorMessage: string
 ): Promise<T> {
   try {
-    const res = await fetch(path);
+    const url = `${API_BASE_URL}${path}`;
+    const res = await fetch(url);
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -30,10 +37,8 @@ async function fetchAndParse<T>(
     return schema.parse(jsonData);
   } catch (error) {
     if (error instanceof Error) {
-      // If it's already an Error, re-throw it
       throw error;
     }
-    // Handle network errors or other issues
     if (error instanceof TypeError && error.message.includes('fetch')) {
       throw new Error('Network error: Unable to connect to the server. Please make sure the backend is running.');
     }
@@ -92,7 +97,8 @@ export function useSendMessage() {
     mutationKey: ["send-message"],
 
     mutationFn: async (data: InsertMessage) => {
-      const res = await fetch(api.messages.create.path, {
+      const url = `${API_BASE_URL}${api.messages.create.path}`;
+      const res = await fetch(url, {
         method: api.messages.create.method,
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +121,7 @@ export function useSendMessage() {
     onSuccess: () => {
       toast({
         title: "Message sent",
-        description: "I’ll get back to you soon.",
+        description: "I'll get back to you soon.",
       });
     },
 
@@ -128,3 +134,20 @@ export function useSendMessage() {
     },
   });
 }
+/* ---------------------------------- */
+/* End of File */
+/* ---------------------------------- */
+
+/* ---------------------------------- */
+/* Instructions to Update API URL */
+/* ---------------------------------- */
+
+/*
+To update the API base URL for production, follow these steps:
+
+**1. Update the `API_BASE_URL` constant:**
+Locate the `API_BASE_URL` constant in this file and change its value to your new backend URL. For example:
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://your-new-backend-url.com";  
+Make sure to also update the `VITE_API_URL` in your `frontend/.env.production` file to match the new URL:
+```
+    VITE_API_URL=https://your-new-backend-url.com*/
