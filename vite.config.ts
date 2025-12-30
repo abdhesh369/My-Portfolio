@@ -28,7 +28,7 @@ export default defineConfig({
   root: path.resolve(__dirname, "frontend"),
   publicDir: path.resolve(__dirname, "attached_assets"),
   build: {
-    outDir: path.resolve(__dirname, "dist/public"),
+    outDir: path.resolve(__dirname, "dist"),
     emptyOutDir: true,
     sourcemap: false,
     rollupOptions: {
