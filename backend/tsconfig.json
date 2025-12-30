@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "rootDir": "..",
     "outDir": "dist",
     "target": "ES2020",
     "module": "ES2020",
@@ -20,7 +19,11 @@
     "declaration": true,
     "sourceMap": true,
     "removeComments": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["../shared/*"]
+    }
   },
   "include": [
     "src/**/*.ts",
@@ -29,6 +32,9 @@
   "exclude": [
     "node_modules",
     "dist",
-    "../frontend"
+    "../frontend",
+    "../vite.config.ts",
+    "../src",
+    "**/*.d.ts"
   ]
 }
